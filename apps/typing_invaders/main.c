@@ -125,6 +125,7 @@ static void handle_char(char c)
         start_run();
         break;
     case SCR_GAME:
+        if (c == ' ') break;               /* touch space: not a game letter */
         game_char(&s_game, c);
         break;
     case SCR_INITIALS:
@@ -230,7 +231,8 @@ int main(void)
                 fw2kb_press(&s_kb, (fw2kb_btn)uev.btn);
                 ledfx_chord_flash((int)uev.btn);
             } else if (uev.btn == UARTKBD_BTN_PAGE) {
-                fw2kb_press(&s_kb, FW2KB_BTN_AI);
+                if (fw2kb_in_chord(&s_kb))          /* cancel half-entered chord */
+                    fw2kb_press(&s_kb, FW2KB_BTN_AI);
             }
         }
         uint16_t tx, ty;

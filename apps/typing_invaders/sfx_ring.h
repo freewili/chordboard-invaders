@@ -1,6 +1,8 @@
-// sfx_ring.h - couples the pure sfx synth to the I2S DMA stream loop.
-// A 8192-frame ring (SRAM - flash writes stall PSRAM) loops forever via
-// zero-CPU DMA; pump() renders ~100 ms ahead of a wall-clock playhead.
+// sfx_ring.h - couples the pure sfx synth to the I2S DMA read-ring.
+// An 8192-frame ring (SRAM - flash writes stall PSRAM) loops forever via the
+// zero-CPU DMA read-ring (audio_i2s_duplex_play_loop), buffer aligned to its
+// 32 KB size as the API requires; pump() renders ~100 ms ahead of a
+// wall-clock playhead.
 #ifndef SFX_RING_H
 #define SFX_RING_H
 #include "sfx.h"

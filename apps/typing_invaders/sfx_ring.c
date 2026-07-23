@@ -5,7 +5,7 @@
 
 #define RING_FRAMES 8192u        /* one stream chunk = 512 ms */
 
-static uint32_t s_ring[RING_FRAMES];
+static uint32_t s_ring[RING_FRAMES] __attribute__((aligned(32768)));
 static uint64_t s_t0;
 static uint32_t s_written;
 static sfx_t   *s_sfx;
@@ -17,7 +17,7 @@ void sfxring_init(sfx_t *s)
     audio_i2s_duplex_init(16000);
     codec_nau88c10_dac_mute(false);
     memset(s_ring, 0, sizeof s_ring);
-    audio_i2s_duplex_play_stream_loop(s_ring, RING_FRAMES);
+    audio_i2s_duplex_play_loop(s_ring, RING_FRAMES);
     s_t0 = time_us_64();
     s_written = 0;
 }
@@ -49,7 +49,7 @@ void sfxring_stop(void)
 void sfxring_resume(void)
 {
     memset(s_ring, 0, sizeof s_ring);
-    audio_i2s_duplex_play_stream_loop(s_ring, RING_FRAMES);
+    audio_i2s_duplex_play_loop(s_ring, RING_FRAMES);
     s_t0 = time_us_64();
     s_written = 0;
 }
