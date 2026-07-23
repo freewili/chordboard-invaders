@@ -2,6 +2,9 @@
 // CONTRACT: hsflash_save() only while audio is stopped (sfxring_stop) and
 // no display flush is running (st7796_flush_busy() == false) - flash ops
 // stall the QMI, which also serves PSRAM (framebuffers).
+// hsflash_save() disables interrupts for the whole erase+program (tens of
+// ms): LED/haptic timing stalls and any DMA IRQ is delayed - call it only
+// from static screens. (Single-core app: no flash_safe_execute needed.)
 #ifndef HISCORE_FLASH_H
 #define HISCORE_FLASH_H
 #include "hiscore.h"
