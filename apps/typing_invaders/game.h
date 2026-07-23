@@ -69,6 +69,7 @@ typedef struct {
     alien_t  aliens[GAME_MAX_ALIENS];
     game_event_t ev[GAME_EVENT_RING];
     int      ev_head, ev_count;
+    int32_t  zap_x_px, zap_y_px;    /* laser anchor: set at each GE_ZAP push */
     uint32_t rng;
 } game_t;
 

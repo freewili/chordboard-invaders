@@ -29,7 +29,7 @@ static shake_t    s_shake;
 static screen_t   s_screen = SCR_TITLE;
 static int        s_timer;              /* ticks left on timed screens */
 static render_fx_t s_fx;
-static uint32_t   s_frame;              /* title animation counter */
+static uint32_t   s_frame;              /* fixed-tick animation counter */
 static char       s_initials[4];
 static int        s_ini_pos;
 static uint16_t  *s_fbufs[2];
@@ -64,12 +64,9 @@ static void handle_game_events(void)
         switch (e.type) {
         case GE_ZAP:
             sfx_trigger(&s_sfx, SFX_ZAP, e.arg);
-            if (s_game.target >= 0 && s_game.aliens[s_game.target].active) {
-                const alien_t *a = &s_game.aliens[s_game.target];
-                s_fx.laser_x = (a->x_q8 >> 8) + a->w_px / 2;
-                s_fx.laser_y = (a->y_q8 >> 8) + a->h_px;
-                s_fx.laser_ttl = 3;
-            }
+            s_fx.laser_x = s_game.zap_x_px;
+            s_fx.laser_y = s_game.zap_y_px;
+            s_fx.laser_ttl = 3;
             break;
         case GE_WRONG:
             sfx_trigger(&s_sfx, SFX_WRONG, 0);
@@ -222,7 +219,6 @@ int main(void)
 
     uint64_t next_tick = time_us_64();
     bool was_touch = false;
-    uint32_t imu_div = 0;
 
     for (;;) {
         /* --- input --- */

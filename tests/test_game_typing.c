@@ -27,6 +27,10 @@ int main(void) {
     game_event_t z = last_of(&g, GE_ZAP, &n);
     ASSERT_EQ(n, 1); ASSERT_EQ(z.arg, 1);
 
+    /* zap anchor captured at event time: alien center-bottom */
+    ASSERT_EQ(g.zap_x_px, (a->x_q8 >> 8) + a->w_px / 2);
+    ASSERT_EQ(g.zap_y_px, (a->y_q8 >> 8) + a->h_px);
+
     /* wrong letter: streak broken, target unlocked, event */
     game_char(&g, 'x');
     ASSERT_EQ(g.target, -1);

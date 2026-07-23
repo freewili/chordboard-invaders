@@ -232,6 +232,8 @@ static void advance_letter(game_t *g, alien_t *a)
     a->typed++;
     stamp_char(g);
     if (a->word[a->typed - 1] == g->fumble_ch) g->fumble_n = 0;  /* mercy clears */
+    g->zap_x_px = (a->x_q8 >> 8) + a->w_px / 2;
+    g->zap_y_px = (a->y_q8 >> 8) + a->h_px;
     game_push_event(g, GE_ZAP, g->streak_mult);
 
     while (a->word[a->typed] == ' ') {            /* boss phrases auto-advance */
