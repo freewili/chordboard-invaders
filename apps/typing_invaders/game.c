@@ -291,10 +291,51 @@ void game_char(game_t *g, char c)
 }
 
 /* ---- Task 7 fill these in ---- */
-void game_shake(game_t *g) { (void)g; }
-int  game_wpm(const game_t *g) { (void)g; return 0; }
-int  game_avg_wpm(const game_t *g) { (void)g; return 0; }
-int  game_accuracy_pct(const game_t *g) { (void)g; return 100; }
+void game_shake(game_t *g)
+{
+    if (g->game_over || !g->bomb_armed) return;
+    int n = 0;
+    for (int i = 0; i < GAME_MAX_ALIENS; i++) {
+        if (!g->aliens[i].active) continue;
+        alien_deactivate(g, i);
+        n++;
+    }
+    if (!n) return;                    /* nothing on screen: keep the bomb */
+    g->bomb_armed = false;
+    game_push_event(g, GE_BOMB, n);
+}
+
+int game_wpm(const game_t *g)
+{
+    uint32_t window = g->ticks < GAME_WPM_WINDOW ? g->ticks : GAME_WPM_WINDOW;
+    if (!window) return 0;
+    int count = 0;
+    uint32_t total = g->chars_typed < GAME_CHAR_RING ? g->chars_typed
+                                                     : GAME_CHAR_RING;
+    for (uint32_t i = 0; i < total; i++) {
+        uint32_t stamp = g->char_ticks[(g->char_head + GAME_CHAR_RING - 1 - i)
+                                       % GAME_CHAR_RING];
+        if (g->ticks - stamp <= window) count++;
+    }
+    return (int)((uint32_t)count * GAME_TICKS_PER_SEC * 60u / (window * 5u));
+}
+
+int game_avg_wpm(const game_t *g)
+{
+    if (!g->ticks) return 0;
+    return (int)(g->chars_typed * GAME_TICKS_PER_SEC * 60u / (g->ticks * 5u));
+}
+
+int game_accuracy_pct(const game_t *g)
+{
+    uint32_t total = g->chars_typed + g->chars_wrong;
+    if (!total) return 100;
+    return (int)(g->chars_typed * 100u / total);
+}
+
 bool game_hint_all(const game_t *g) { return g->level <= 3; }
 bool game_hint_next(const game_t *g) { return g->level <= 6; }
-bool game_hint_mercy(const game_t *g, char c) { (void)g; (void)c; return false; }
+bool game_hint_mercy(const game_t *g, char c)
+{
+    return g->fumble_n >= 2 && g->fumble_ch == c;
+}
