@@ -42,3 +42,7 @@ add_test(NAME sfx COMMAND test_sfx)
 add_executable(test_hiscore test_hiscore.c ${APPSRC}/hiscore.c)
 target_include_directories(test_hiscore PRIVATE ${APPSRC} ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME hiscore COMMAND test_hiscore)
+
+add_executable(test_shake test_shake.c ${APPSRC}/shake.c)
+target_include_directories(test_shake PRIVATE ${APPSRC} ${CMAKE_CURRENT_SOURCE_DIR})
+add_test(NAME shake COMMAND test_shake)
