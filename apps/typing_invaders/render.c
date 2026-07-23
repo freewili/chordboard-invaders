@@ -123,8 +123,8 @@ void render_game(const game_t *g, const render_fx_t *fx)
 void render_title(const hs_table_t *hs, uint32_t frame)
 {
     fb_clear(fb_rgb(0, 0, 16));
-    fb_draw_text(96, 60, 4, fb_rgb(120, 255, 120), fb_rgb(0, 0, 16), "TYPING");
-    fb_draw_text(72, 100, 4, fb_rgb(255, 80, 80), fb_rgb(0, 0, 16), "INVADERS");
+    fb_draw_text(120, 60, 4, fb_rgb(120, 255, 120), fb_rgb(0, 0, 16), "CHORDBOARD");
+    fb_draw_text(144, 100, 4, fb_rgb(255, 80, 80), fb_rgb(0, 0, 16), "INVADERS");
     if ((frame >> 4) & 1)
         fb_draw_text(108, 180, 2, fb_rgb(255, 255, 255), fb_rgb(0, 0, 16),
                      "PRESS ANY CHORD TO START");
