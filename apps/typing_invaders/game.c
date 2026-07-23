@@ -196,8 +196,101 @@ void game_tick(game_t *g)
     }
 }
 
-/* ---- Task 6/7 fill these in ---- */
-void game_char(game_t *g, char c) { (void)g; (void)c; }
+/* ---- Task 6 typing mechanics ---- */
+
+static void stamp_char(game_t *g)
+{
+    g->chars_typed++;
+    g->char_ticks[g->char_head] = g->ticks;
+    g->char_head = (g->char_head + 1) % GAME_CHAR_RING;
+}
+
+static void mark_wrong(game_t *g, char expected)
+{
+    g->chars_wrong++;
+    g->word_dirty = true;
+    g->flawless_words = 0;
+    g->streak_mult = 1;
+    g->target = -1;
+    if (expected) {
+        if (expected == g->fumble_ch) g->fumble_n++;
+        else { g->fumble_ch = expected; g->fumble_n = 1; }
+    }
+    game_push_event(g, GE_WRONG, 0);
+}
+
+static void score_kill(game_t *g, alien_t *a)
+{
+    int len = 0;
+    for (const char *p = a->word; *p; p++) if (*p != ' ') len++;
+    const alien_def_t *d = alien_def(a->sp);
+    g->score += (uint32_t)(10 * len * d->score_pct / 100 * g->streak_mult);
+}
+
+static void advance_letter(game_t *g, alien_t *a)
+{
+    a->typed++;
+    stamp_char(g);
+    if (a->word[a->typed - 1] == g->fumble_ch) g->fumble_n = 0;  /* mercy clears */
+    game_push_event(g, GE_ZAP, g->streak_mult);
+
+    while (a->word[a->typed] == ' ') {            /* boss phrases auto-advance */
+        a->typed++;
+        int remaining = 0;
+        for (const char *p = a->word + a->typed; *p; p++) remaining += (*p == ' ');
+        game_push_event(g, GE_BOSS_CHUNK, remaining + 1);
+    }
+
+    if (a->word[a->typed] != '\0') return;
+
+    /* word complete */
+    if (a->sp == SP_SHIELDED && a->shield) {
+        a->shield = false;
+        a->typed = 0;
+        strncpy(a->word, words_pick(level_bucket(g->level)), GAME_WORD_MAX - 1);
+        a->word[GAME_WORD_MAX - 1] = '\0';
+        g->word_dirty = false;         /* fresh word, fresh flawless chance */
+        game_push_event(g, GE_SHIELD_POP, 0);
+        return;
+    }
+    score_kill(g, a);
+    if (a->sp == SP_BOSS) game_push_event(g, GE_BOSS_KILL, 0);
+    game_push_event(g, GE_KILL, (int32_t)a->sp);
+    int idx = (int)(a - g->aliens);
+    alien_deactivate(g, idx);
+    if (!g->word_dirty) {
+        g->flawless_words++;
+        g->streak_mult = 1 + g->flawless_words;
+        if (g->streak_mult > 8) g->streak_mult = 8;
+    }
+    g->word_dirty = false;
+}
+
+void game_char(game_t *g, char c)
+{
+    if (g->game_over) return;
+    if (g->target >= 0 && g->aliens[g->target].active) {
+        alien_t *a = &g->aliens[g->target];
+        if (a->word[a->typed] == c) { advance_letter(g, a); return; }
+        mark_wrong(g, a->word[a->typed]);
+        return;
+    }
+    /* no lock: target the lowest (deepest) alien whose next letter matches */
+    int best = -1;
+    for (int i = 0; i < GAME_MAX_ALIENS; i++) {
+        alien_t *a = &g->aliens[i];
+        if (!a->active || a->word[a->typed] != c) continue;
+        if (best < 0 || a->y_q8 > g->aliens[best].y_q8) best = i;
+    }
+    if (best < 0) { mark_wrong(g, 0); return; }
+    g->target = best;
+    /* NOTE: word_dirty is NOT cleared here - a re-lock continues the same
+     * word attempt, so an earlier miss still marks it dirty. It clears only
+     * on kill and on shield pop. */
+    advance_letter(g, &g->aliens[best]);
+}
+
+/* ---- Task 7 fill these in ---- */
 void game_shake(game_t *g) { (void)g; }
 int  game_wpm(const game_t *g) { (void)g; return 0; }
 int  game_avg_wpm(const game_t *g) { (void)g; return 0; }
