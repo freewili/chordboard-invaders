@@ -15,6 +15,11 @@ void sfxring_init(sfx_t *s)
     s_sfx = s;
     codec_nau88c10_init();
     audio_i2s_duplex_init(16000);
+    /* The duplex PIO program captures mic bits (autopush) on every frame; with
+     * no RX consumer the RX FIFO fills in ~250 us and stalls the SM, freezing
+     * all I2S clocks (= total silence). The free-running capture DMA drains RX
+     * forever; we never read the blocks. */
+    audio_capture_start();
     codec_nau88c10_dac_mute(false);
     memset(s_ring, 0, sizeof s_ring);
     audio_i2s_duplex_play_loop(s_ring, RING_FRAMES);
