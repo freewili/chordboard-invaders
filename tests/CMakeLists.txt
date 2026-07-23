@@ -19,3 +19,8 @@ add_test(NAME words COMMAND test_words)
 add_executable(test_aliens test_aliens.c ${APPSRC}/aliens.c)
 target_include_directories(test_aliens PRIVATE ${APPSRC} ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME aliens COMMAND test_aliens)
+
+add_executable(test_game_core test_game_core.c
+    ${APPSRC}/game.c ${APPSRC}/words.c ${APPSRC}/aliens.c)
+target_include_directories(test_game_core PRIVATE ${APPSRC} ${CMAKE_CURRENT_SOURCE_DIR})
+add_test(NAME game_core COMMAND test_game_core)
