@@ -50,3 +50,10 @@ add_test(NAME shake COMMAND test_shake)
 add_executable(test_fb test_fb.c ${APPSRC}/fb.c ${BSPDIR}/display/font5x7.c)
 target_include_directories(test_fb PRIVATE ${APPSRC} ${BSPDIR} ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME fb COMMAND test_fb)
+
+add_executable(test_render test_render.c
+    ${APPSRC}/render.c ${APPSRC}/fb.c ${APPSRC}/game.c ${APPSRC}/words.c
+    ${APPSRC}/aliens.c ${APPSRC}/hints.c ${APPSRC}/hiscore.c
+    ${BSPDIR}/display/font5x7.c)
+target_include_directories(test_render PRIVATE ${APPSRC} ${BSPDIR} ${CMAKE_CURRENT_SOURCE_DIR})
+add_test(NAME render COMMAND test_render)
