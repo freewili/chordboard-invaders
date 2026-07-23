@@ -38,6 +38,7 @@ species_t alien_choose(int level, uint32_t rnd)
     int total = 0;
     for (int sp = 0; sp < SP_BOSS; sp++)
         if (k_defs[sp].min_level <= level) total += k_defs[sp].weight;
+    if (total <= 0) return SP_DRIFTER;
     int pick = (int)(rnd % (uint32_t)total);
     for (int sp = 0; sp < SP_BOSS; sp++) {
         if (k_defs[sp].min_level > level) continue;

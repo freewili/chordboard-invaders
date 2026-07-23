@@ -22,6 +22,7 @@ int main(void) {
         species_t s = alien_choose(9, r * 2654435761u);
         ASSERT_TRUE(s != SP_BOSS);
     }
+    ASSERT_EQ(alien_choose(0, 123u), SP_DRIFTER);   /* defensive: no eligible species */
     /* by level 5 all four regular species appear */
     int seen[SP_COUNT] = { 0 };
     for (uint32_t r = 0; r < 2000; r++) seen[alien_choose(5, r * 2654435761u)]++;
