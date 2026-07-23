@@ -41,6 +41,21 @@ int main(void) {
     /* flash overlay path */
     fx.flash_ttl = 2;
     render_game(&g, &fx);
+
+    /* chordboard bar: five colored buttons with labels in the bottom 22 px */
+    fb_clear(0);
+    const char *labels[5] = { "abcde", "fghij", "klmno", "pqrst", "uvwxy" };
+    render_chordbar(labels);
+    int bar_px = 0;
+    for (int y = 298; y < ST7796_H; y++)
+        for (int x = 0; x < ST7796_W; x++)
+            bar_px += (buf[y * ST7796_W + x] != 0);
+    ASSERT_TRUE(bar_px > 2000);                       /* buttons drew */
+    int field_px = 0;
+    for (int y = 0; y < 290; y++)
+        for (int x = 0; x < ST7796_W; x++)
+            field_px += (buf[y * ST7796_W + x] != 0);
+    ASSERT_TRUE(field_px == 0);                       /* bar stays in its strip */
     free(buf);
     TEST_RETURN();
 }

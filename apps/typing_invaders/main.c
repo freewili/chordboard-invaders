@@ -184,6 +184,9 @@ static void render_current(void)
     case SCR_INITIALS: render_initials(s_initials, s_ini_pos, s_game.score); break;
     case SCR_SCORES:   render_hiscores(&s_hs); break;
     }
+    const char *labels[5];
+    fw2kb_get_labels(&s_kb, labels);
+    render_chordbar(labels);
     st7796_flush_async(0, 0, ST7796_W - 1, ST7796_H - 1,
                        s_fbufs[s_backbuf], NULL);
 }

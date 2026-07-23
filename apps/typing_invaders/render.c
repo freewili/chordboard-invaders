@@ -8,7 +8,12 @@
 
 #define CELL_W 12
 #define CELL_H 16
-#define HUD_Y  296
+#define HUD_Y  278           /* HUD strip 278..294; chord bar owns 298..320 */
+
+#define BAR_H     22
+#define BAR_Y     (ST7796_H - BAR_H)          /* 298 */
+#define BAR_BTN_W ((ST7796_W - 12) / 5)       /* 93, matches FW2 soft menu */
+#define BAR_PITCH (BAR_BTN_W + 3)             /* 96 */
 
 /* fw2kb keycap colors (from the FW2 firmware soft menu) for hint dots */
 static const uint8_t k_btn_rgb[5][3] = {
@@ -175,6 +180,32 @@ void render_initials(const char initials[4], int pos, uint32_t score)
     }
     fb_draw_text(96, 230, 1, fb_rgb(140, 140, 180), fb_rgb(0, 0, 24),
                  "chords type - tap top of screen = backspace");
+}
+
+/* True FW2 keycap colors for the bar itself (rpPanelManager::drawMenu) — the
+ * hint-dot table above brightens green/blue/red for visibility on black; the
+ * bar boxes are big enough to wear the real colors. White text, as firmware. */
+static const uint8_t k_cap_rgb[5][3] = {
+    { 214, 210, 214 }, { 255, 227, 49 }, { 16, 65, 0 },
+    { 0, 28, 197 }, { 132, 0, 58 },
+};
+
+void render_chordbar(const char *labels[5])
+{
+    fb_fill_rect(0, BAR_Y, ST7796_W, BAR_H, 0);       /* clear the 3 px gaps */
+    for (int i = 0; i < 5; i++) {
+        int x = i * BAR_PITCH;
+        uint16_t cap = fb_rgb(k_cap_rgb[i][0], k_cap_rgb[i][1], k_cap_rgb[i][2]);
+        fb_fill_rect(x, BAR_Y, BAR_BTN_W, BAR_H, cap);
+        int len = 0;
+        while (labels[i][len] && len < 5) len++;
+        int tx = x + (BAR_BTN_W - len * CELL_W) / 2;
+        char clipped[6];
+        for (int c = 0; c < len; c++) clipped[c] = labels[i][c];
+        clipped[len] = '\0';
+        fb_draw_text(tx, BAR_Y + (BAR_H - CELL_H) / 2, 2,
+                     fb_rgb(255, 255, 255), cap, clipped);
+    }
 }
 
 void render_hiscores(const hs_table_t *hs)

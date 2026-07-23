@@ -14,7 +14,9 @@
 #define GAME_EVENT_RING     16
 #define GAME_LIVES          3
 #define GAME_FIELD_W        480
-#define GAME_DEFENSE_Y      276     /* aliens crossing this line cost a life */
+#define GAME_DEFENSE_Y      258     /* aliens crossing this line cost a life
+                                       (field ends here; cannon+HUD+chord bar
+                                       occupy 258..320) */
 #define GAME_CHAR_RING      64
 #define GAME_WPM_WINDOW     450     /* 15 s of ticks for the live WPM figure */
 

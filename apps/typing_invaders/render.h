@@ -19,4 +19,9 @@ void render_game_over(const game_t *g);
 void render_initials(const char initials[4], int pos, uint32_t score);
 void render_hiscores(const hs_table_t *hs);
 
+/* Live chordboard bar (bottom 22 px): five keycap-colored buttons showing the
+ * fw2kb labels — letter groups normally, single letters mid-chord. Drawn LAST,
+ * over whatever the screen renderer left in that strip. */
+void render_chordbar(const char *labels[5]);
+
 #endif
