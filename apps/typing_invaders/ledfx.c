@@ -17,7 +17,7 @@ static uint64_t s_flash_until, s_rainbow_until, s_white_until, s_next_show;
 void ledfx_init(void)
 {
     ws2812_init(pio1, 0, 21);        /* PIN_LED_DATA (pinmap.md) */
-    ws2812_set_brightness(40);
+    ws2812_set_brightness(20);
     s_base = k_level[0];
 }
 
