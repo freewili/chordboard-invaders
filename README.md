@@ -5,7 +5,7 @@ you its two-press chord keyboard — Typing of the Dead meets Space Invaders.
 Colored ASCII aliens fall from the sky carrying words; type them on the
 chordboard to blast them before they reach your defense line.
 
-![Chordboard Invaders title screen on a FreeWili 2](assets/ChordBoard.png)
+![Chordboard Invaders title screen on a FreeWili 2](assets/Fw2ChordBoard.jpeg)
 
 **▶ Watch it in action:** <https://youtu.be/OEr_qWnGxTY>
 
