@@ -15,3 +15,7 @@ add_test(NAME hints COMMAND test_hints)
 add_executable(test_words test_words.c ${APPSRC}/words.c ${APPSRC}/hints.c)
 target_include_directories(test_words PRIVATE ${APPSRC} ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME words COMMAND test_words)
+
+add_executable(test_aliens test_aliens.c ${APPSRC}/aliens.c)
+target_include_directories(test_aliens PRIVATE ${APPSRC} ${CMAKE_CURRENT_SOURCE_DIR})
+add_test(NAME aliens COMMAND test_aliens)
