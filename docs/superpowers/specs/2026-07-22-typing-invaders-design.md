@@ -69,7 +69,7 @@ ASCII art drawn glyph-by-glyph with BSP gfx text rendering; each species has a 2
 | Zigzag | Cyan | Crab | Sine-wave sway, slightly faster |
 | Diver | Magenta | Narrow rocket | Rare, fast fall, short word — urgency spike |
 | Shielded | Orange | Chunky tank | Word must be typed twice (banner refills after shield pops) |
-| Boss | Red | Large multi-row monster with health bar | Every 5th level; phrase typed word-by-word (a chunk = one whitespace-separated word, the space typed to confirm it), each completed chunk knocks off a visible piece of its body |
+| Boss | Red | Large multi-row monster with health bar | Every 5th level; phrase typed word-by-word (a chunk = one whitespace-separated word; spaces auto-advance, since the chordboard has no space chord — space is a touch gesture), each completed chunk knocks off a visible piece of its body |
 
 Word banner sits under each alien in a high-contrast box: typed letters dimmed, next letter bright (with chord dots per hint schedule).
 
